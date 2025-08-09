@@ -158,7 +158,8 @@ if (window.location.pathname.endsWith('/') || window.location.pathname.endsWith(
 
                 if (isProfileComplete) {
                     window.location.href = `${getBasePath()}home.html`;
-                } else {
+                }
+                else {
                     window.location.href = `${getBasePath()}profile-setup.html`;
                 }
 

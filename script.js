@@ -516,4 +516,3 @@ if (window.location.pathname.includes('profile-setup.html')) {
             window.location.href = `${getBasePath()}index.html`;
         }
     })();
-}
