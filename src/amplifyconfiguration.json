@@ -1,9 +1,9 @@
 {
-  "aws_project_region": "eu-central-1",
+  "aws_project_region": "eu-north-1",
   "aws_cognito_identity_pool_id": "eu-central-1:b7605fa3-c401-4071-84b4-eb4383cb316e",
-  "aws_cognito_region": "eu-central-1",
-  "aws_user_pools_id": "eu-central-1_kQfNhi2r1",
-  "aws_user_pools_web_client_id": "157pb1sto8hhegfjfqsnbf2vk3",
+  "aws_cognito_region": "eu-north-1",
+  "aws_user_pools_id": "eu-north-1_brdMkzj67",
+  "aws_user_pools_web_client_id": "11ri73f3j2ma53auguuaaas09l",
   "oauth": {},
   "aws_cognito_username_attributes": [
     "EMAIL"

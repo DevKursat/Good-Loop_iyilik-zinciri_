@@ -2,18 +2,12 @@ import 'buffer';
 import 'process';
 import { Amplify } from 'aws-amplify';
 import { signIn, signUp, getCurrentUser, resetPassword, confirmResetPassword } from 'aws-amplify/auth';
-import amplifyconfig from './src/amplifyconfiguration.json';
+import amplifyconfiguration from './src/amplifyconfiguration.json';
+import { getBasePath } from './src/utils.js';
 
-Amplify.configure(amplifyconfig);
+Amplify.configure(amplifyconfiguration);
 
-// Function to get the correct base path for redirects
-function getBasePath() {
-    let path = window.location.pathname;
-    // If the path includes a file name (e.g., index.html), remove it.
-    const lastSlashIndex = path.lastIndexOf('/');
-    // Return the path up to the last slash, ensuring it ends with a slash.
-    return path.substring(0, lastSlashIndex + 1);
-}
+
 
 // --- Route Protection for Protected Pages ---
 (async () => {
@@ -206,129 +200,86 @@ if (window.location.pathname.endsWith('/') || window.location.pathname.endsWith(
 
 // --- Logic for verify.html ---
 if (window.location.pathname.includes('verify.html')) {
-    const { confirmSignUp, resendSignUpCode } = await import('aws-amplify/auth');
-    const emailDisplay = document.getElementById('verify-email-display');
-    const urlParams = new URLSearchParams(window.location.search);
-    const emailFromUrl = urlParams.get('email');
-    if (emailFromUrl) emailDisplay.textContent = emailFromUrl;
+    (async () => {
+        const { confirmSignUp, resendSignUpCode } = await import('aws-amplify/auth');
+        const emailDisplay = document.getElementById('verify-email-display');
+        const urlParams = new URLSearchParams(window.location.search);
+        const emailFromUrl = urlParams.get('email');
+        if (emailFromUrl) emailDisplay.textContent = emailFromUrl;
 
-    document.getElementById('verify-form').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const code = document.getElementById('verification-code').value;
-        if (!emailFromUrl || !code) return alert('E-posta veya doğrulama kodu eksik.');
-        try {
-            await confirmSignUp({ username: emailFromUrl, confirmationCode: code });
-            alert('E-posta başarıyla doğrulandı! Lütfen giriş yapın.');
-            window.location.href = `${getBasePath()}index.html`;
-        } catch (error) {
-            console.error('Doğrulama hatası:', error);
-            alert(error.message);
-        }
-    });
+        document.getElementById('verify-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const code = document.getElementById('verification-code').value;
+            if (!emailFromUrl || !code) return alert('E-posta veya doğrulama kodu eksik.');
+            try {
+                await confirmSignUp({ username: emailFromUrl, confirmationCode: code });
+                alert('E-posta başarıyla doğrulandı! Lütfen giriş yapın.');
+                window.location.href = `${getBasePath()}index.html`;
+            } catch (error) {
+                console.error('Doğrulama hatası:', error);
+                alert(error.message);
+            }
+        });
 
-    const resendContainer = document.getElementById('resend-code-container');
-    const securityMessages = [
-        "Bu sayfa tamamen güvenlidir.",
-        "E-posta ulaşmadıysa spam (gereksiz) klasörünüzü kontrol edin."
-    ];
-    let messageIndex = 0;
+        const resendContainer = document.getElementById('resend-code-container');
+        const securityMessages = [
+            "Bu sayfa tamamen güvenlidir.",
+            "E-posta ulaşmadıysa spam (gereksiz) klasörünüzü kontrol edin."
+        ];
+        let messageIndex = 0;
 
-    function setupResendButton() {
-        resendContainer.innerHTML = `
+        function setupResendButton() {
+            resendContainer.innerHTML = `
             <div id="resend-code-progress"></div>
             <div id="resend-code-text"></div>
         `;
-        const progressEl = document.getElementById('resend-code-progress');
-        const textEl = document.getElementById('resend-code-text');
-        
-        let countdown = 30; // Countdown changed to 30 seconds
-        resendContainer.classList.remove('ready');
-        progressEl.style.transition = 'none'; // Disable transition for immediate reset
-        progressEl.style.width = '0%';
-        
-        const interval = setInterval(() => {
-            countdown--;
-            const progressPercentage = ((30 - countdown) / 30) * 100;
-            progressEl.style.transition = 'width 1s linear'; // Re-enable for smooth progress
-            progressEl.style.width = `${progressPercentage}%`;
-            textEl.textContent = `TEKRAR GÖNDER (${countdown}s)`;
+            const progressEl = document.getElementById('resend-code-progress');
+            const textEl = document.getElementById('resend-code-text');
+            
+            let countdown = 30; // Countdown changed to 30 seconds
+            resendContainer.classList.remove('ready');
+            progressEl.style.transition = 'none'; // Disable transition for immediate reset
+            progressEl.style.width = '0%';
+            
+            const interval = setInterval(() => {
+                countdown--;
+                const progressPercentage = ((30 - countdown) / 30) * 100;
+                progressEl.style.transition = 'width 1s linear'; // Re-enable for smooth progress
+                progressEl.style.width = `${progressPercentage}%`;
+                textEl.textContent = `TEKRAR GÖNDER (${countdown}s)`;
 
-            if (countdown <= 0) {
-                clearInterval(interval);
-                resendContainer.classList.add('ready');
-                textEl.textContent = 'KODU TEKRAR GÖNDER';
-            }
-        }, 1000);
-    }
-
-    resendContainer.addEventListener('click', async () => {
-        if (resendContainer.classList.contains('ready')) {
-            if (!emailFromUrl) return alert('E-posta adresi bulunamadı.');
-            try {
-                await resendSignUpCode({ username: emailFromUrl });
-                alert('Doğrulama kodu tekrar gönderildi. Spam (gereksiz) klasörünü kontrol etmeyi unutma.');
-                setupResendButton(); // Restart timer
-            } catch (error) {
-                console.error('Kodu tekrar gönderme hatası:', error);
-                alert(error.message);
-            }
-        } else {
-            alert(securityMessages[messageIndex]); // Changed to alert
-            messageIndex = (messageIndex + 1) % securityMessages.length;
+                if (countdown <= 0) {
+                    clearInterval(interval); 
+                    resendContainer.classList.add('ready');
+                    textEl.textContent = 'KODU TEKRAR GÖNDER';
+                }
+            }, 1000);
         }
-    });
 
-    setupResendButton(); // Initial setup
+        resendContainer.addEventListener('click', async () => {
+            if (resendContainer.classList.contains('ready')) {
+                if (!emailFromUrl) return alert('E-posta adresi bulunamadı.');
+                try {
+                    await resendSignUpCode({ username: emailFromUrl });
+                    alert('Doğrulama kodu tekrar gönderildi. Spam (gereksiz) klasörünü kontrol etmeyi unutma.');
+                    setupResendButton(); // Restart timer
+                } catch (error) {
+                    console.error('Kodu tekrar gönderme hatası:', error);
+                    alert(error.message);
+                }
+            } else {
+                alert(securityMessages[messageIndex]); // Changed to alert
+                messageIndex = (messageIndex + 1) % securityMessages.length;
+            }
+        });
+
+        setupResendButton(); // Initial setup
+    })();
 }
 
 // --- Logic for forgot-password.html ---
 if (window.location.pathname.includes('forgot-password.html')) {
-    const sendCodeForm = document.getElementById('send-code-form');
-    const resetPasswordForm = document.getElementById('reset-password-form');
-    const emailInput = document.getElementById('reset-email');
-
-    sendCodeForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        try {
-            await resetPassword({ username: emailInput.value });
-            alert('Sıfırlama kodu e-postana gönderildi. Spam (gereksiz) klasörünü kontrol etmeyi unutma.');
-            
-            // Switch forms by toggling the 'hidden' class, which is the correct way
-            sendCodeForm.classList.add('hidden');
-            resetPasswordForm.classList.remove('hidden');
-
-        } catch (error) {
-            console.error('Şifre sıfırlama hatası:', error);
-
-            if (error.name === 'UserNotConfirmedException' || error.name === 'InvalidParameterException') {
-                const { resendSignUpCode } = await import('aws-amplify/auth');
-                try {
-                    await resendSignUpCode({ username: emailInput.value });
-                    alert('Şifrenizi sıfırlamak için önce e-postanızı doğrulamanız gerekiyor. Size yeni bir doğrulama kodu gönderdik, lütfen spam (gereksiz) klasörünüzü kontrol edin.');
-                    window.location.href = `${getBasePath()}verify.html?email=${encodeURIComponent(emailInput.value)}`;
-                } catch (resendError) {
-                    console.error('Doğrulama kodu gönderme hatası:', resendError);
-                    alert('Bir hata oluştu. Lütfen tekrar deneyin.');
-                }
-            } else {
-                alert(error.message);
-            }
-        }
-    });
-
-    resetPasswordForm.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const confirmationCode = document.getElementById('reset-code').value;
-        const newPassword = document.getElementById('new-password').value;
-        try {
-            await confirmResetPassword({ username: emailInput.value, confirmationCode, newPassword });
-            alert('Şifren başarıyla değiştirildi. Şimdi giriş yapabilirsin.');
-            window.location.href = `${getBasePath()}index.html`;
-        } catch (error) {
-            console.error('Yeni şifre ayarlama hatası:', error);
-            alert(error.message);
-        }
-    });
+    (async () => { const sendCodeForm = document.getElementById('send-code-form'); const resetPasswordForm = document.getElementById('reset-password-form'); const emailInput = document.getElementById('reset-email'); sendCodeForm.addEventListener('submit', async (e) => { e.preventDefault(); try { await resetPassword({ username: emailInput.value }); alert('Sıfırlama kodu e-postana gönderildi. Spam (gereksiz) klasörünü kontrol etmeyi unutma.'); // Switch forms by toggling the 'hidden' class, which is the correct way sendCodeForm.classList.add('hidden'); resetPasswordForm.classList.remove('hidden'); } catch (error) { console.error('Şifre sıfırlama hatası:', error); if (error.name === 'UserNotConfirmedException' || error.name === 'InvalidParameterException') { const { resendSignUpCode } = await import('aws-amplify/auth'); try { await resendSignUpCode({ username: emailInput.value }); alert('Şifrenizi sıfırlamak için önce e-postanızı doğrulamanız gerekiyor. Size yeni bir doğrulama kodu gönderdik, lütfen spam (gereksiz) klasörünüzü kontrol edin.'); window.location.href = `${getBasePath()}verify.html?email=${encodeURIComponent(emailInput.value)}`; } catch (resendError) { console.error('Doğrulama kodu gönderme hatası:', resendError); alert('Bir hata oluştu. Lütfen tekrar deneyin.'); } } else { alert(error.message); } } }); resetPasswordForm.addEventListener('submit', async (e) => { e.preventDefault(); const confirmationCode = document.getElementById('reset-code').value; const newPassword = document.getElementById('new-password').value; try { await confirmResetPassword({ username: emailInput.value, confirmationCode, newPassword }); alert('Şifren başarıyla değiştirildi. Şimdi giriş yapabilirsin.'); window.location.href = `${getBasePath()}index.html`; } catch (error) { console.error('Yeni şifre ayarlama hatası:', error); alert(error.message); } }); })();
 }
 
 // --- Logic for home.html ---
