@@ -1,0 +1,121 @@
+<!DOCTYPE html><html lang=tr><script type=importmap>{"imports":{"6fEqA":"/Good-Loop_iyilik-zinciri_/auth.f42ca4f5.js"}}</script><meta charset=UTF-8><meta name=viewport content="width=device-width, initial-scale=1.0"><title>İyilik Zinciri - Profil Kurulumu</title><link rel=stylesheet href=/Good-Loop_iyilik-zinciri_/iyilik-zinciri.965c39e0.css><link rel=stylesheet href=/Good-Loop_iyilik-zinciri_/iyilik-zinciri.883ca114.css><link rel=stylesheet href=/Good-Loop_iyilik-zinciri_/iyilik-zinciri.15fd3510.css><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&amp;display=swap" rel=stylesheet><link rel=stylesheet href=https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css><body>
+    <div id=auth-page-container>
+        <div class="auth-container-standalone profile-setup-container">
+            
+            
+            <div class=progress-bar>
+                <div class=progress-bar-inner></div>
+            </div>
+
+            
+            <div class="active setup-step" id=step-1>
+                <h1>Seni Tanıyalım</h1>
+                <p>Profilini oluşturarak başlayalım.</p>
+                <form id=step-1-form>
+                    <input id=name placeholder=İsim required>
+                    <input type=date id=birthdate required>
+                    <div class=gender-selection>
+                        <div class=gender-option data-gender=erkek>
+                            <i class="fa-mars fas"></i>
+                            <span>Erkek</span>
+                        </div>
+                        <div class=gender-option data-gender=kadin>
+                            <i class="fa-venus fas"></i>
+                            <span>Kadın</span>
+                        </div>
+                        <div class=gender-option data-gender=belirtmek_istemiyorum>
+                            <i class="fa-genderless fas"></i>
+                            <span>Diğer</span>
+                        </div>
+                    </div>
+                    <input type=hidden id=gender required>
+                    <button type=button id=step-1-btn>Devam Et</button>
+                </form>
+            </div>
+
+            
+            <div class=setup-step id=step-2>
+                <div class=step-header>
+                    <h1>İlgi Alanların</h1>
+                    <span id=interest-counter>(0/6)</span>
+                </div>
+                <p>Hangi alanlarda iyilik yapmak istersin?</p>
+                <div class=preferences-grid>
+                    <div class=preference-card data-preference=hayvanlar>
+                        <i class="fa-paw fas"></i>
+                        <span>Hayvanlar</span>
+                    </div>
+                    <div class=preference-card data-preference=cevre>
+                        <i class="fa-leaf fas"></i>
+                        <span>Çevre</span>
+                    </div>
+                    <div class=preference-card data-preference=insanlar>
+                        <i class="fa-users fas"></i>
+                        <span>İnsanlar</span>
+                    </div>
+                    <div class=preference-card data-preference=toplum>
+                        <i class="fa-hands-helping fas"></i>
+                        <span>Toplum</span>
+                    </div>
+                    <div class=preference-card data-preference=egitim>
+                        <i class="fa-book-open fas"></i>
+                        <span>Eğitim</span>
+                    </div>
+                    <div class=preference-card data-preference=saglik>
+                        <i class="fa-heartbeat fas"></i>
+                        <span>Sağlık</span>
+                    </div>
+                    <div class=preference-card data-preference=sanat>
+                        <i class="fa-paint-brush fas"></i>
+                        <span>Sanat &amp; Kültür</span>
+                    </div>
+                    <div class=preference-card data-preference=teknoloji>
+                        <i class="fa-laptop-code fas"></i>
+                        <span>Teknoloji</span>
+                    </div>
+                </div>
+                <div class=step-buttons>
+                    <button id=step-2-btn>Devam Et</button>
+                    <button id=complete-profile-btn class=secondary-btn>Profili Tamamla</button>
+                </div>
+            </div>
+
+            
+            <div class=setup-step id=step-3>
+                <h1>İyiliklerini Paylaş</h1>
+                <p>Sosyal medya hesaplarını ekle (isteğe bağlı).</p>
+                <form id=step-3-form>
+                    <div class=social-input>
+                        <i class="fa-instagram fab"></i>
+                        <input id=instagram placeholder="Instagram Kullanıcı Adı">
+                    </div>
+                    <div class=social-input>
+                        <i class="fa-tiktok fab"></i>
+                        <input id=tiktok placeholder="TikTok Kullanıcı Adı">
+                    </div>
+                    <div class=social-input>
+                        <i class="fa-twitter fab"></i>
+                        <input id=x placeholder="X (Twitter) Kullanıcı Adı">
+                    </div>
+                    <div class=social-input>
+                        <i class="fa-facebook fab"></i>
+                        <input id=facebook placeholder="Facebook Kullanıcı Adı">
+                    </div>
+                    <div class=social-input>
+                        <i class="fa-reddit fab"></i>
+                        <input id=reddit placeholder="Reddit Kullanıcı Adı">
+                    </div>
+                    <div class=social-input>
+                        <i class="fa-linkedin fab"></i>
+                        <input id=linkedin placeholder="LinkedIn Kullanıcı Adı">
+                    </div>
+                    
+                    <button>Profili Tamamla ve Başla!</button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+    <script type=module src=/Good-Loop_iyilik-zinciri_/iyilik-zinciri.f494eca0.js></script>
+
+

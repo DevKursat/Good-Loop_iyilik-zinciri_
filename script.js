@@ -276,10 +276,53 @@ if (window.location.pathname.includes('verify.html')) {
         setupResendButton(); // Initial setup
     })();
 }
-
 // --- Logic for forgot-password.html ---
 if (window.location.pathname.includes('forgot-password.html')) {
-    (async () => { const sendCodeForm = document.getElementById('send-code-form'); const resetPasswordForm = document.getElementById('reset-password-form'); const emailInput = document.getElementById('reset-email'); sendCodeForm.addEventListener('submit', async (e) => { e.preventDefault(); try { await resetPassword({ username: emailInput.value }); alert('Sıfırlama kodu e-postana gönderildi. Spam (gereksiz) klasörünü kontrol etmeyi unutma.'); // Switch forms by toggling the 'hidden' class, which is the correct way sendCodeForm.classList.add('hidden'); resetPasswordForm.classList.remove('hidden'); } catch (error) { console.error('Şifre sıfırlama hatası:', error); if (error.name === 'UserNotConfirmedException' || error.name === 'InvalidParameterException') { const { resendSignUpCode } = await import('aws-amplify/auth'); try { await resendSignUpCode({ username: emailInput.value }); alert('Şifrenizi sıfırlamak için önce e-postanızı doğrulamanız gerekiyor. Size yeni bir doğrulama kodu gönderdik, lütfen spam (gereksiz) klasörünüzü kontrol edin.'); window.location.href = `${getBasePath()}verify.html?email=${encodeURIComponent(emailInput.value)}`; } catch (resendError) { console.error('Doğrulama kodu gönderme hatası:', resendError); alert('Bir hata oluştu. Lütfen tekrar deneyin.'); } } else { alert(error.message); } } }); resetPasswordForm.addEventListener('submit', async (e) => { e.preventDefault(); const confirmationCode = document.getElementById('reset-code').value; const newPassword = document.getElementById('new-password').value; try { await confirmResetPassword({ username: emailInput.value, confirmationCode, newPassword }); alert('Şifren başarıyla değiştirildi. Şimdi giriş yapabilirsin.'); window.location.href = `${getBasePath()}index.html`; } catch (error) { console.error('Yeni şifre ayarlama hatası:', error); alert(error.message); } }); })();
+    (async () => {
+        const sendCodeForm = document.getElementById('send-code-form');
+        const resetPasswordForm = document.getElementById('reset-password-form');
+        const emailInput = document.getElementById('reset-email');
+
+        sendCodeForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                await resetPassword({ username: emailInput.value });
+                alert('Sıfırlama kodu e-postana gönderildi. Spam (gereksiz) klasörünü kontrol etmeyi unutma.');
+                // Switch forms by toggling the 'hidden' class, which is the correct way
+                sendCodeForm.classList.add('hidden');
+                resetPasswordForm.classList.remove('hidden');
+            } catch (error) {
+                console.error('Şifre sıfırlama hatası:', error);
+                if (error.name === 'UserNotConfirmedException' || error.name === 'InvalidParameterException') {
+                    const { resendSignUpCode } = await import('aws-amplify/auth');
+                    try {
+                        await resendSignUpCode({ username: emailInput.value });
+                        alert('Şifrenizi sıfırlamak için önce e-postanızı doğrulamanız gerekiyor. Size yeni bir doğrulama kodu gönderdik, lütfen spam (gereksiz) klasörünüzü kontrol edin.');
+                        window.location.href = `${getBasePath()}verify.html?email=${encodeURIComponent(emailInput.value)}`;
+                    } catch (resendError) {
+                        console.error('Doğrulama kodu gönderme hatası:', resendError);
+                        alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+                    }
+                } else {
+                    alert(error.message);
+                }
+            }
+        });
+
+        resetPasswordForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const confirmationCode = document.getElementById('reset-code').value;
+            const newPassword = document.getElementById('new-password').value;
+            try {
+                await confirmResetPassword({ username: emailInput.value, confirmationCode, newPassword });
+                alert('Şifren başarıyla değiştirildi. Şimdi giriş yapabilirsin.');
+                window.location.href = `${getBasePath()}index.html`;
+            } catch (error) {
+                console.error('Yeni şifre ayarlama hatası:', error);
+                alert(error.message);
+            }
+        });
+    })();
 }
 
 // --- Logic for home.html ---
@@ -516,3 +559,4 @@ if (window.location.pathname.includes('profile-setup.html')) {
             window.location.href = `${getBasePath()}index.html`;
         }
     })();
+}
