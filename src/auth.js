@@ -173,7 +173,8 @@ if (window.location.pathname.endsWith('/') || window.location.pathname.endsWith(
                     loginPasswordInput.classList.add('input-error');
                     setTimeout(() => loginPasswordInput.classList.remove('input-error'), 500);
                     alert('Kullanıcı adı veya şifre hatalı.');
-                } else {
+                }
+                else {
                     alert(error.message);
                 }
             }
@@ -185,7 +186,7 @@ if (window.location.pathname.endsWith('/') || window.location.pathname.endsWith(
             const email = document.getElementById('signup-email').value;
             const password = signupPasswordInput.value;
             try {
-                await signUp({ username: email, password, attributes: { email } });
+                await signUp({ username: email, password, attributes: { email, emails: email } });
                 alert('Hesap başarıyla oluşturuldu! Doğrulama kodu e-postana gönderildi. Spam (gereksiz) klasörünü kontrol etmeyi unutma.');
                 window.location.href = `${getBasePath()}verify.html?email=${encodeURIComponent(email)}`;
             } catch (error) {
@@ -299,7 +300,7 @@ if (window.location.pathname.includes('forgot-password.html')) {
                     const { resendSignUpCode } = await import('aws-amplify/auth');
                     try {
                         await resendSignUpCode({ username: emailInput.value });
-                        alert('Şifrenizi sıfırlamak için önce e-postanızı doğrulamanız gerekiyor. Size yeni bir doğrulama kodu gönderdik, lütfen spam (gereksiz) klasörünüzü kontrol edin.');
+                        alert('Şifrenizi doğrulamanız gerekiyor. Size yeni bir doğrulama kodu gönderdik, lütfen spam (gereksiz) klasörünüzü kontrol edin.');
                         window.location.href = `${getBasePath()}verify.html?email=${encodeURIComponent(emailInput.value)}`;
                     } catch (resendError) {
                         console.error('Doğrulama kodu gönderme hatası:', resendError);

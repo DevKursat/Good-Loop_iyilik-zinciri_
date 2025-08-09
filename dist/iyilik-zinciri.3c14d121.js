@@ -674,15 +674,8 @@ var _awsAmplify = require("aws-amplify");
 var _auth = require("aws-amplify/auth");
 var _amplifyconfigurationJson = require("./src/amplifyconfiguration.json");
 var _amplifyconfigurationJsonDefault = parcelHelpers.interopDefault(_amplifyconfigurationJson);
-(0, _awsAmplify.Amplify).configure(amplifyconfig);
-// Function to get the correct base path for redirects
-function getBasePath() {
-    let path = window.location.pathname;
-    // If the path includes a file name (e.g., index.html), remove it.
-    const lastSlashIndex = path.lastIndexOf('/');
-    // Return the path up to the last slash, ensuring it ends with a slash.
-    return path.substring(0, lastSlashIndex + 1);
-}
+var _utilsJs = require("./src/utils.js");
+(0, _awsAmplify.Amplify).configure((0, _amplifyconfigurationJsonDefault.default));
 // --- Route Protection for Protected Pages ---
 (async ()=>{
     const currentPath = window.location.pathname;
@@ -693,7 +686,7 @@ function getBasePath() {
         await (0, _auth.getCurrentUser)();
     } catch (error) {
         // No session, redirect to login.
-        window.location.href = getBasePath() + 'index.html';
+        window.location.href = (0, _utilsJs.getBasePath)() + 'index.html';
     }
 })();
 // --- Logic for index.html (Login/Signup Page) ---
@@ -820,12 +813,12 @@ if (window.location.pathname.endsWith('/') || window.location.pathname.endsWith(
             // After successful sign-in, get user attributes to decide the redirect.
             const { attributes } = await (0, _auth.getCurrentUser)();
             const isProfileComplete = attributes['custom:setup_complete'] && attributes['custom:setup_complete'].toLowerCase() === 'evet';
-            if (isProfileComplete) window.location.href = `${getBasePath()}home.html`;
-            else window.location.href = `${getBasePath()}profile-setup.html`;
+            if (isProfileComplete) window.location.href = `${(0, _utilsJs.getBasePath)()}home.html`;
+            else window.location.href = `${(0, _utilsJs.getBasePath)()}profile-setup.html`;
         } catch (error) {
             console.error("Giri\u015F hatas\u0131:", error);
             loginPasswordInput.classList.remove('input-error'); // Clear previous errors
-            if (error.name === 'UserNotConfirmedException') window.location.href = `${getBasePath()}verify.html?email=${encodeURIComponent(username)}`;
+            if (error.name === 'UserNotConfirmedException') window.location.href = `${(0, _utilsJs.getBasePath)()}verify.html?email=${encodeURIComponent(username)}`;
             else if (error.name === 'NotAuthorizedException') {
                 loginPasswordInput.classList.add('input-error');
                 setTimeout(()=>loginPasswordInput.classList.remove('input-error'), 500);
@@ -846,7 +839,7 @@ if (window.location.pathname.endsWith('/') || window.location.pathname.endsWith(
                 }
             });
             alert("Hesap ba\u015Far\u0131yla olu\u015Fturuldu! Do\u011Frulama kodu e-postana g\xf6nderildi. Spam (gereksiz) klas\xf6r\xfcn\xfc kontrol etmeyi unutma.");
-            window.location.href = `${getBasePath()}verify.html?email=${encodeURIComponent(email)}`;
+            window.location.href = `${(0, _utilsJs.getBasePath)()}verify.html?email=${encodeURIComponent(email)}`;
         } catch (error) {
             console.error("Kay\u0131t hatas\u0131:", error);
             alert(error.message);
@@ -870,7 +863,7 @@ if (window.location.pathname.includes('verify.html')) (async ()=>{
                 confirmationCode: code
             });
             alert("E-posta ba\u015Far\u0131yla do\u011Fruland\u0131! L\xfctfen giri\u015F yap\u0131n.");
-            window.location.href = `${getBasePath()}index.html`;
+            window.location.href = `${(0, _utilsJs.getBasePath)()}index.html`;
         } catch (error) {
             console.error("Do\u011Frulama hatas\u0131:", error);
             alert(error.message);
@@ -883,7 +876,10 @@ if (window.location.pathname.includes('verify.html')) (async ()=>{
     ];
     let messageIndex = 0;
     function setupResendButton() {
-        resendContainer.innerHTML = '`<div id="resend-code-progress"></div><div id="resend-code-text"></div>';
+        resendContainer.innerHTML = `
+            <div id="resend-code-progress"></div>
+            <div id="resend-code-text"></div>
+        `;
         const progressEl = document.getElementById('resend-code-progress');
         const textEl = document.getElementById('resend-code-text');
         let countdown = 30; // Countdown changed to 30 seconds
@@ -924,7 +920,7 @@ if (window.location.pathname.includes('verify.html')) (async ()=>{
     setupResendButton(); // Initial setup
 })();
 // --- Logic for forgot-password.html ---
-if (window.location.pathname.includes('forgot-password.html')) {
+if (window.location.pathname.includes('forgot-password.html')) (async ()=>{
     const sendCodeForm = document.getElementById('send-code-form');
     const resetPasswordForm = document.getElementById('reset-password-form');
     const emailInput = document.getElementById('reset-email');
@@ -947,7 +943,7 @@ if (window.location.pathname.includes('forgot-password.html')) {
                         username: emailInput.value
                     });
                     alert("\u015Eifrenizi s\u0131f\u0131rlamak i\xe7in \xf6nce e-postan\u0131z\u0131 do\u011Frulaman\u0131z gerekiyor. Size yeni bir do\u011Frulama kodu g\xf6nderdik, l\xfctfen spam (gereksiz) klas\xf6r\xfcn\xfcz\xfc kontrol edin.");
-                    window.location.href = `${getBasePath()}verify.html?email=${encodeURIComponent(emailInput.value)}`;
+                    window.location.href = `${(0, _utilsJs.getBasePath)()}verify.html?email=${encodeURIComponent(emailInput.value)}`;
                 } catch (resendError) {
                     console.error("Do\u011Frulama kodu g\xf6nderme hatas\u0131:", resendError);
                     alert("Bir hata olu\u015Ftu. L\xfctfen tekrar deneyin.");
@@ -966,13 +962,13 @@ if (window.location.pathname.includes('forgot-password.html')) {
                 newPassword
             });
             alert("\u015Eifren ba\u015Far\u0131yla de\u011Fi\u015Ftirildi. \u015Eimdi giri\u015F yapabilirsin.");
-            window.location.href = `${getBasePath()}index.html`;
+            window.location.href = `${(0, _utilsJs.getBasePath)()}index.html`;
         } catch (error) {
             console.error("Yeni \u015Fifre ayarlama hatas\u0131:", error);
             alert(error.message);
         }
     });
-}
+})();
 // --- Logic for home.html ---
 if (window.location.pathname.includes('home.html')) {
     // NOTE: The settings menu and edit profile button are assumed to be dynamically added.
@@ -981,7 +977,7 @@ if (window.location.pathname.includes('home.html')) {
         // Assuming the button or its parent has an ID like 'edit-profile-option'
         if (e.target.matches('#edit-profile-option') || e.target.closest('#edit-profile-option')) {
             e.preventDefault();
-            window.location.href = `${getBasePath()}profile-setup.html?mode=edit`;
+            window.location.href = `${(0, _utilsJs.getBasePath)()}profile-setup.html?mode=edit`;
         }
     });
     const dailyTaskText = document.getElementById('daily-task-text');
@@ -1136,7 +1132,7 @@ if (window.location.pathname.includes('profile-setup.html')) (async ()=>{
                 await updateUserAttributes({
                     userAttributes: attributesToUpdate
                 });
-                if (goToHome) window.location.href = `${getBasePath()}home.html`;
+                if (goToHome) window.location.href = `${(0, _utilsJs.getBasePath)()}home.html`;
                 else alert("Profilin ba\u015Far\u0131yla g\xfcncellendi!");
             } catch (error) {
                 console.error("Profil g\xfcncelleme hatas\u0131:", error);
@@ -1144,7 +1140,7 @@ if (window.location.pathname.includes('profile-setup.html')) (async ()=>{
             }
         };
         completeProfileBtn.addEventListener('click', ()=>{
-            if (isEditMode) return window.location.href = `${getBasePath()}home.html`; // Cancel and go home
+            if (isEditMode) return window.location.href = `${(0, _utilsJs.getBasePath)()}home.html`; // Cancel and go home
             submitProfile(true);
         });
         document.getElementById('step-3-form').addEventListener('submit', (e)=>{
@@ -1158,11 +1154,11 @@ if (window.location.pathname.includes('profile-setup.html')) (async ()=>{
         showStep(currentStep);
     } catch (error) {
         console.error("Authentication error on profile setup page, redirecting.", error);
-        window.location.href = `${getBasePath()}index.html`;
+        window.location.href = `${(0, _utilsJs.getBasePath)()}index.html`;
     }
 })();
 
-},{"buffer":"bCaf4","process":"euskh","aws-amplify":"dobGB","aws-amplify/auth":"bLlRO","./src/amplifyconfiguration.json":"lMtgW","94c3965f01f48f4e":"jFQEh","@parcel/transformer-js/src/esmodule-helpers.js":"fE9oC"}],"bCaf4":[function(require,module,exports,__globalThis) {
+},{"buffer":"bCaf4","process":"euskh","aws-amplify":"dobGB","aws-amplify/auth":"bLlRO","./src/amplifyconfiguration.json":"lMtgW","./src/utils.js":"khuqI","94c3965f01f48f4e":"jFQEh","@parcel/transformer-js/src/esmodule-helpers.js":"fE9oC"}],"bCaf4":[function(require,module,exports,__globalThis) {
 /*!
  * The buffer module from node.js, for the browser.
  *
@@ -22101,9 +22097,21 @@ const createDeleteWebAuthnCredentialClient = (config)=>(0, _composers.composeSer
     });
 
 },{"@aws-amplify/core/internals/aws-client-utils/composers":"atnR1","./shared/handler/cognitoUserPoolTransferHandler.mjs":"jWExT","./shared/serde/createUserPoolSerializer.mjs":"qnlfC","./shared/serde/createUserPoolDeserializer.mjs":"i8vuQ","@aws-amplify/core/internals/aws-client-utils":"5U21t","@aws-amplify/core/internals/utils":"dRREz","./constants.mjs":"dhcbk","@parcel/transformer-js/src/esmodule-helpers.js":"fE9oC"}],"lMtgW":[function(require,module,exports,__globalThis) {
-module.exports = JSON.parse("{\"aws_project_region\":\"eu-central-1\",\"aws_cognito_identity_pool_id\":\"eu-central-1:b7605fa3-c401-4071-84b4-eb4383cb316e\",\"aws_cognito_region\":\"eu-central-1\",\"aws_user_pools_id\":\"eu-central-1_kQfNhi2r1\",\"aws_user_pools_web_client_id\":\"157pb1sto8hhegfjfqsnbf2vk3\",\"oauth\":{},\"aws_cognito_username_attributes\":[\"EMAIL\"],\"aws_cognito_social_providers\":[],\"aws_cognito_signup_attributes\":[\"EMAIL\"],\"aws_cognito_mfa_configuration\":\"OFF\",\"aws_cognito_mfa_types\":[\"SMS\"],\"aws_cognito_password_protection_settings\":{\"passwordPolicyMinLength\":8,\"passwordPolicyCharacters\":[]},\"aws_cognito_verification_mechanisms\":[\"EMAIL\"]}");
+module.exports = JSON.parse("{\"aws_project_region\":\"eu-north-1\",\"aws_cognito_identity_pool_id\":\"eu-central-1:b7605fa3-c401-4071-84b4-eb4383cb316e\",\"aws_cognito_region\":\"eu-north-1\",\"aws_user_pools_id\":\"eu-north-1_brdMkzj67\",\"aws_user_pools_web_client_id\":\"11ri73f3j2ma53auguuaaas09l\",\"oauth\":{},\"aws_cognito_username_attributes\":[\"EMAIL\"],\"aws_cognito_social_providers\":[],\"aws_cognito_signup_attributes\":[\"EMAIL\"],\"aws_cognito_mfa_configuration\":\"OFF\",\"aws_cognito_mfa_types\":[\"SMS\"],\"aws_cognito_password_protection_settings\":{\"passwordPolicyMinLength\":8,\"passwordPolicyCharacters\":[]},\"aws_cognito_verification_mechanisms\":[\"EMAIL\"]}");
 
-},{}],"jFQEh":[function(require,module,exports,__globalThis) {
+},{}],"khuqI":[function(require,module,exports,__globalThis) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getBasePath", ()=>getBasePath);
+function getBasePath() {
+    let path = window.location.pathname;
+    // If the path includes a file name (e.g., index.html), remove it.
+    const lastSlashIndex = path.lastIndexOf('/');
+    // Return the path up to the last slash, ensuring it ends with a slash.
+    return path.substring(0, lastSlashIndex + 1);
+}
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"fE9oC"}],"jFQEh":[function(require,module,exports,__globalThis) {
 module.exports = Promise.resolve(module.bundle.root("bLlRO"));
 
 },{"bLlRO":"bLlRO"}]},["jWhgi","kTBnD"], "kTBnD", "parcelRequire2757", {})
