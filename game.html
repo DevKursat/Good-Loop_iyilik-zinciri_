@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>İyilik Yağmuru</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:opsz,wght@6..12,400;6..12,700;6..12,900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Nunito Sans', sans-serif;
+            background-color: #F0F4F8;
+            color: #334155;
+            touch-action: none;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        canvas {
+            background: linear-gradient(to bottom, #87CEEB, #E0F7FA);
+            border-radius: 1rem;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .modal {
+            background-color: rgba(0, 0, 0, 0.6);
+            transition: opacity 0.3s ease;
+        }
+        .btn {
+            transition: all 0.2s ease;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .btn:active {
+            transform: translateY(0px);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 20px;
+            opacity: 0.9;
+            pointer-events: none;
+            animation: confetti-fall 3s linear forwards;
+            top: -20px; /* DÜZELTME: Ekranın üstünden başla */
+        }
+        @keyframes confetti-fall {
+            to {
+                transform: translateY(110vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center p-4">
+
+    <div class="w-full max-w-sm mx-auto text-center">
+        <h1 class="text-4xl font-black text-slate-700 mb-2">İyilik Yağmuru</h1>
+        
+        <div class="my-4 p-4 bg-white/70 backdrop-blur-sm rounded-xl shadow-lg flex justify-between items-center border border-slate-200">
+            <div class="text-left">
+                <span class="text-sm font-bold text-slate-500">SKOR</span>
+                <p id="score" class="text-3xl font-black text-slate-800">0</p>
+            </div>
+            <div class="text-right">
+                <span class="text-sm font-bold text-slate-500">CAN</span>
+                <p id="lives" class="text-3xl font-black text-red-500">❤️❤️❤️</p>
+            </div>
+        </div>
+
+        <canvas id="gameCanvas"></canvas>
+    </div>
+
+    <!-- Oyun Bitti Modalı -->
+    <div id="modal" class="modal fixed inset-0 flex items-center justify-center opacity-0 pointer-events-none">
+        <div id="modalContent" class="bg-white rounded-2xl shadow-2xl p-8 text-center w-11/12 max-w-sm transform scale-95 transition-transform duration-300">
+            <h2 id="modalTitle" class="text-3xl font-black text-slate-800 mb-2">Oyuna Başla</h2>
+            <p id="modalText" class="text-lg text-slate-500 mb-6">İyilik damlalarını yakala, olumsuzluklardan kaçın!</p>
+            <div id="scoreContainer" class="space-y-2 mb-6 hidden">
+                 <p class="text-2xl">Skorun: <span id="finalScore" class="font-bold">0</span></p>
+                 <p class="text-lg text-amber-600">En Yüksek: <span id="modalHighScore" class="font-bold">0</span></p>
+            </div>
+            <button id="startButton" class="btn w-full bg-emerald-500 text-white font-bold py-3 px-6 rounded-xl text-lg hover:bg-emerald-600">
+                BAŞLA
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const livesElement = document.getElementById('lives');
+        
+        const modal = document.getElementById('modal');
+        const modalContent = document.getElementById('modalContent');
+        const modalTitle = document.getElementById('modalTitle');
+        const modalText = document.getElementById('modalText');
+        const scoreContainer = document.getElementById('scoreContainer');
+        const finalScoreElement = document.getElementById('finalScore');
+        const modalHighScoreElement = document.getElementById('modalHighScore');
+        const startButton = document.getElementById('startButton');
+
+        let player, items, score, lives, gameOver, gameSpeed, highScore;
+        let animationFrameId;
+        let highScoreBeaten = false;
+
+        const goodItems = ['💖', '✨', '🙏', '😊', '🌟'];
+        const badItems = ['💔', '⛈️', '😠'];
+
+        function loadHighScore() {
+            highScore = parseInt(localStorage.getItem('iyilikYagmuruHighScore')) || 0;
+        }
+
+        function saveHighScore() {
+            localStorage.setItem('iyilikYagmuruHighScore', highScore);
+        }
+
+        function triggerConfetti() {
+            const colors = ['#e74c3c', '#3498db', '#f1c40f', '#2ecc71', '#9b59b6'];
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = `${Math.random() * 100}vw`;
+                confetti.style.animationDelay = `${Math.random() * 0.5}s`;
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                document.body.appendChild(confetti);
+                setTimeout(() => confetti.remove(), 3000);
+            }
+        }
+
+        function resizeCanvas() {
+            const parent = canvas.parentElement;
+            const size = Math.min(parent.clientWidth, 500);
+            canvas.width = size;
+            canvas.height = size * 1.25;
+        }
+
+        function setup() {
+            resizeCanvas();
+            player = {
+                emoji: '🧺',
+                x: (canvas.width / 2) - 25, 
+                y: canvas.height - 60,
+                width: 50,
+                height: 50
+            };
+            items = [];
+            score = 0;
+            lives = 3;
+            gameOver = false;
+            gameSpeed = 2;
+            highScoreBeaten = false;
+            
+            scoreElement.textContent = '0';
+            updateLivesDisplay();
+            
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            modalContent.classList.add('scale-95');
+            
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+            
+            gameLoop();
+        }
+
+        let lastSpawnTime = 0;
+        function gameLoop() {
+            if (gameOver) {
+                showGameOver();
+                return;
+            }
+            update();
+            draw();
+            animationFrameId = requestAnimationFrame(gameLoop);
+        }
+
+        function update() {
+            if (Date.now() - lastSpawnTime > (1000 - score * 2)) {
+                spawnItem();
+                lastSpawnTime = Date.now();
+            }
+
+            for (let i = items.length - 1; i >= 0; i--) {
+                const item = items[i];
+                item.y += gameSpeed;
+
+                if (
+                    item.x < player.x + player.width &&
+                    item.x + item.size > player.x &&
+                    item.y < player.y + player.height &&
+                    item.y + item.size > player.y
+                ) {
+                    if (item.isBad) {
+                        lives--;
+                    } else {
+                        score += 10;
+                        if (score > highScore && !highScoreBeaten) {
+                            highScoreBeaten = true;
+                            triggerConfetti();
+                        }
+                    }
+                    items.splice(i, 1);
+                    updateLivesDisplay();
+                    scoreElement.textContent = score;
+                } else if (item.y > canvas.height) {
+                    if (!item.isBad) {
+                        lives--;
+                    }
+                    items.splice(i, 1);
+                    updateLivesDisplay();
+                }
+            }
+
+            if (lives <= 0) {
+                gameOver = true;
+            }
+        }
+
+        function spawnItem() {
+            const isBad = Math.random() < 0.25;
+            items.push({
+                x: Math.random() * (canvas.width - 40),
+                y: -40,
+                speed: gameSpeed + Math.random(),
+                char: isBad ? badItems[Math.floor(Math.random() * badItems.length)] : goodItems[Math.floor(Math.random() * goodItems.length)],
+                isBad: isBad,
+                size: 40
+            });
+            if (gameSpeed < 5) gameSpeed += 0.05;
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // DÜZELTME: Sepeti emoji olarak çiz.
+            ctx.font = '50px Nunito Sans';
+            ctx.fillText(player.emoji, player.x, player.y + player.height);
+
+            // Damlaları çiz
+            ctx.font = '40px Nunito Sans';
+            items.forEach(item => {
+                ctx.fillText(item.char, item.x, item.y);
+            });
+        }
+
+        function updateLivesDisplay() {
+            livesElement.textContent = '❤️'.repeat(Math.max(0, lives));
+        }
+
+        function showStartScreen() {
+            loadHighScore();
+            modalTitle.textContent = 'Oyuna Başla';
+            modalText.textContent = 'İyilik damlalarını yakala, olumsuzluklardan kaçın!';
+            scoreContainer.classList.add('hidden');
+            startButton.textContent = 'BAŞLA';
+            
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modalContent.classList.remove('scale-95');
+        }
+
+        function showGameOver() {
+            finalScoreElement.textContent = score;
+            if (score > highScore) {
+                highScore = score;
+                saveHighScore();
+                modalText.textContent = 'Yeni En Yüksek Skor! Harikasın!';
+            } else {
+                modalText.textContent = 'Her zaman yeniden başlayabilirsin.';
+            }
+            modalHighScoreElement.textContent = highScore;
+            
+            modalTitle.textContent = 'Oyun Bitti!';
+            scoreContainer.classList.remove('hidden');
+            startButton.textContent = 'YENİDEN OYNA';
+
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            modalContent.classList.remove('scale-95');
+        }
+
+        function movePlayer(cursorX) {
+            player.x = cursorX - player.width / 2;
+
+            if (player.x < 0) player.x = 0;
+            if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
+        }
+
+        function handleMouseMove(e) {
+            const rect = canvas.getBoundingClientRect();
+            movePlayer(e.clientX - rect.left);
+        }
+
+        function handleTouchMove(e) {
+            e.preventDefault();
+            const rect = canvas.getBoundingClientRect();
+            movePlayer(e.touches[0].clientX - rect.left);
+        }
+
+        canvas.addEventListener('mousemove', handleMouseMove);
+        canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+        startButton.addEventListener('click', setup);
+        window.addEventListener('resize', resizeCanvas);
+        
+        showStartScreen();
+    </script>
+</body>
+</html>
