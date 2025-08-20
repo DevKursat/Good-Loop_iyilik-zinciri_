@@ -124,7 +124,7 @@ if (window.location.pathname.endsWith('/') || window.location.pathname.endsWith(
     const loginEmailInput = document.getElementById('login-email');
     const loginPasswordInput = document.getElementById('login-password');
     const loginButtonContainer = document.getElementById('login-button-container');
-    const loginFormEl = document.getElementById('login-form');
+    const loginFormEl = document.getElementById('login');
 
     function validateLoginInputs() {
         const email = loginEmailInput.value;
@@ -306,7 +306,8 @@ if (window.location.pathname.includes('forgot-password.html')) {
                         console.error('Doğrulama kodu gönderme hatası:', resendError);
                         alert('Bir hata oluştu. Lütfen tekrar deneyin.');
                     }
-                } else {
+                }
+                else {
                     alert(error.message);
                 }
             }

@@ -3,80 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İyilik Zinciri - Giriş Yap</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="auth.css">
-    <link rel="stylesheet" href="home.css">
-    <link rel="stylesheet" href="profile-setup.css">
+    <title>İyilik Zinciri - Gizlilik Politikası</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9fafb;
+            color: #374151;
+        }
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+        }
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.75rem;
+        }
+        p, li {
+            line-height: 1.75;
+            margin-bottom: 1rem;
+        }
+        ul {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+        }
+        a {
+            color: #4f46e5;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
-<body>
-    <div class="color-overlay" id="color-overlay"></div>
-    <div class="mobile-logo-container">
-        <img src="./assets/Logo.png" alt="İyilik Zinciri Logo" class="mobile-app-logo">
+<body class="antialiased">
+
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold text-gray-800">İyilik Zinciri Gizlilik Politikası</h1>
+            <p class="mt-2 text-lg text-gray-500">Son Güncelleme Tarihi: 17 Ağustos 2025</p>
+        </header>
+
+        <main>
+            <p><strong>Bu gizlilik politikası, lusid.help@gmail.com tarafından geliştirilen "İyilik Zinciri" mobil uygulaması ("uygulama", "biz") için geçerlidir.</strong> "İyilik Zinciri" olarak, gizliliğinize ve kişisel verilerinizin korunmasına büyük önem veriyoruz. Bu Gizlilik Politikası, uygulamamızı kullandığınızda hangi bilgileri topladığımızı, bu bilgileri nasıl kullandığımızı ve haklarınızın neler olduğunu açıklamaktadır.</p>
+
+            <section>
+                <h2>1. Topladığımız Bilgiler</h2>
+                <p>Uygulamamızı size sunabilmek için aşağıdaki türde bilgileri topluyoruz:</p>
+                <ul>
+                    <li><strong>Hesap Bilgileri:</strong> Kayıt olurken sağladığınız Ad Soyad, Doğum Tarihi, Cinsiyet ve seçtiğiniz "İyilik Türleri" gibi profil bilgileri.</li>
+                    <li><strong>Kullanıcı Tarafından Oluşturulan İçerikler:</strong> Bir iyilik görevini tamamladığınızda yüklediğiniz kanıt fotoğrafı veya videosu, yazdığınız başlık ve açıklamalar.</li>
+                    <li><strong>Etkileşim Verileri:</strong> Diğer kullanıcıların gönderilerine yaptığınız "Teşekkür" gibi etkileşimler.</li>
+                    <li><strong>Cihaz Bilgileri:</strong> Size anlık bildirimler (push notifications) gönderebilmek için cihazınızın benzersiz bildirim token'ını (FCM Token).</li>
+                    <li><strong>Kullanım Verileri:</strong> Uygulama içindeki hareketleriniz, hangi özellikleri kullandığınız gibi anonimleştirilmiş teknik veriler.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>2. Bilgileri Nasıl Kullanıyoruz?</h2>
+                <p>Topladığımız bilgileri aşağıdaki amaçlar için kullanırız:</p>
+                <ul>
+                    <li>Uygulamanın temel işlevlerini sağlamak (hesap oluşturma, görev sunma, içerik paylaşma).</li>
+                    <li>Deneyiminizi kişiselleştirmek (ilgi alanlarınıza göre görevler ve akış içeriği sunmak).</li>
+                    <li>Günlük görev hatırlatıcıları ve önemli güncellemeler gibi anlık bildirimler göndermek.</li>
+                    <li>Uygulamayı analiz etmek, hataları gidermek ve hizmet kalitemizi artırmak.</li>
+                    <li>Kullanım koşullarımızı uygulamak ve güvenliği sağlamak.</li>
+                </ul>
+            </section>
+
+            <section>
+                <h2>3. Bilgilerin Paylaşımı</h2>
+                <p>Kişisel bilgilerinizi, izniniz olmadan üçüncü taraf reklam veya pazarlama şirketleriyle <strong>kesinlikle paylaşmayız.</strong> Bilgileriniz sadece uygulamanın çalışması için gerekli olan aşağıdaki altyapı sağlayıcılarıyla, güvenli bir şekilde paylaşılabilir:</p>
+                <ul>
+                    <li><strong>Supabase:</strong> Veritabanı, kullanıcı kimlik doğrulaması ve dosya depolama hizmetlerimiz için.</li>
+                    <li><strong>Google (Firebase Cloud Messaging):</strong> Anlık bildirimleri göndermek için.</li>
+                    <li><strong>Google (Gemini API):</strong> "İyilik Asistanı" özelliğimizin görev ve motivasyon metinleri üretmesi için.</li>
+                </ul>
+            </section>
+            
+            <section>
+                <h2>4. Veri Güvenliği</h2>
+                <p>Verilerinizin güvenliğini sağlamak için endüstri standardı teknik ve idari güvenlik önlemleri alıyoruz. Tüm veriler, sunucularımıza aktarılırken ve sunucularımızda saklanırken şifrelenir.</p>
+            </section>
+
+            <section>
+                <h2>5. Haklarınız</h2>
+                <p>Hesabınıza giriş yaparak profil bilgilerinizi istediğiniz zaman güncelleyebilirsiniz. Hesabınızı kalıcı olarak silmek isterseniz, uygulama içindeki "Zinciri Kır" bölümündeki adımları izleyerek bize bir talep gönderebilirsiniz.</p>
+            </section>
+
+            <section>
+                <h2>6. Bu Politikadaki Değişiklikler</h2>
+                <p>Bu Gizlilik Politikasını zaman zaman güncelleyebiliriz. Önemli bir değişiklik yaptığımızda, sizi uygulama içinde veya başka bir yolla bilgilendireceğiz.</p>
+            </section>
+
+            <section>
+                <h2>7. Bize Ulaşın</h2>
+                <p>Bu Gizlilik Politikası ile ilgili herhangi bir sorunuz veya endişeniz varsa, lütfen bizimle şu adresten iletişime geçin:</p>
+                <p><a href="mailto:lusid.help@gmail.com">lusid.help@gmail.com</a></p>
+            </section>
+        </main>
+
+        <footer class="text-center text-gray-500 mt-12 pt-8 border-t">
+            <p>&copy; 2025 İyilik Zinciri. Tüm hakları saklıdır.</p>
+        </footer>
     </div>
-    <div id="auth-page-container">
-        <div class="auth-container-animated" id="auth-container-animated">
-            <div class="form-container sign-up">
-                <form id="signup-form">
-                    <h1>Hesap Oluştur</h1>
-                    <div class="social-icons">
-                        <a href="#" class="icon" id="google-signup-btn"><i class="fab fa-google"></i></a>
-                        <a href="#" class="icon" id="apple-signup-btn"><i class="fab fa-apple"></i></a>
-                    </div>
-                    <span>veya e-postanızı kullanarak kayıt olun</span>
-                    <input type="email" id="signup-email" placeholder="E-posta" required>
-                    <input type="password" id="signup-password" placeholder="Şifre" required>
-                    <div class="password-strength-meter" id="strength-meter-container">
-                        <div class="strength-bar" id="strength-bar"></div>
-                        <span id="strength-text"></span>
-                    </div>
-                    <p class="mobile-toggle-form">Zaten hesabın var mı? <a href="#" id="show-login-mobile">Giriş Yap</a></p>
-                </form>
-            </div>
 
-            <!-- Giriş Yap Formu -->
-            <div class="form-container sign-in">
-                <form id="login-form">
-                    <h1>Giriş Yap</h1>
-                    <div class="social-icons">
-                        <a href="#" class="icon" id="google-login-btn"><i class="fab fa-google"></i></a>
-                        <a href="#" class="icon" id="apple-login-btn"><i class="fab fa-apple"></i></a>
-                    </div>
-                    <span>veya e-postanızı kullanarak giriş yapın</span>
-                    <input type="email" id="login-email" placeholder="E-posta" required>
-                    <input type="password" id="login-password" placeholder="Şifre" required>
-                    <div class="password-strength-meter" id="login-button-container">
-                        <div class="strength-bar" id="login-bar"></div>
-                        <span id="login-text">Giriş Yap</span>
-                    </div>
-                    <a href="./forgot-password.html" id="forgot-password-link">Şifreni mi unuttun?</a>
-                    <p class="mobile-toggle-form">Hesabın yok mu? <a href="#" id="show-signup-mobile">Kayıt Ol</a></p>
-                </form>
-            </div>
-
-            <!-- Animasyonlu Geçiş Katmanı -->
-            <div class="toggle-container">
-                <div class="toggle">
-                    <div class="toggle-panel toggle-left" id="login">
-                        <img src="./assets/Logo.png" alt="İyilik Zinciri Logo" class="app-logo">
-                        <h1>Tekrar Hoş Geldin,</h1>
-                        <p>İyilik zincirine giriş yapmak için hemen tıkla!</p>
-                    </div>
-                    <div class="toggle-panel toggle-right" id="register">
-                        <img src="./assets/Logo.png" alt="İyilik Zinciri Logo" class="app-logo">
-                        <h1>Merhaba İyiliksever,</h1>
-                        <p>İyilik zincirine katılmak için hemen tıkla!</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-            <script type="module" src="script.js"></script>
 </body>
 </html>
-<!-- Trigger GitHub Actions -->
